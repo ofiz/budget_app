@@ -1,0 +1,77 @@
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: budget_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    environment:
+      # OWASP A02: Secure secret management - use environment variables
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-changeme}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - budget_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Application
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: budget_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # OWASP A02: Load secrets from environment (never hardcode)
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      MONGODB_URL: mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-changeme}@mongodb:27017/budget_db?authSource=admin
+      DATABASE_NAME: budget_db
+      # Security settings
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - budget_network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # E2E Tests (optional - run with: docker-compose run e2e_tests)
+  e2e_tests:
+    build:
+      context: ./e2e_tests
+      dockerfile: Dockerfile.e2e
+    container_name: budget_e2e_tests
+    environment:
+      BASE_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - budget_network
+    profiles:
+      - testing
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  budget_network:
+    driver: bridge

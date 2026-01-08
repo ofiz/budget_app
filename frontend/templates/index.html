@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget App - Financial Tracking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Distinctive typography: Outfit for headers, Space Grotesk for body -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Auth Pages -->
+    <div id="auth-container" class="auth-page">
+        <!-- Login Page -->
+        <div id="login-page" class="auth-form-container active">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1 class="brand-title">Budget<span class="accent">Flow</span></h1>
+                    <p class="auth-subtitle">Track. Analyze. Thrive.</p>
+                </div>
+                
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required autocomplete="current-password">
+                    </div>
+                    
+                    <div id="login-error" class="error-message"></div>
+                    
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p>Don't have an account? <a href="#" id="show-register">Create one</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Register Page -->
+        <div id="register-page" class="auth-form-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1 class="brand-title">Join <span class="accent">BudgetFlow</span></h1>
+                    <p class="auth-subtitle">Start your financial journey</p>
+                </div>
+                
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" required autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" required autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required autocomplete="new-password">
+                        <small>Min. 8 chars, 1 uppercase, 1 lowercase, 1 digit</small>
+                    </div>
+                    
+                    <div id="register-error" class="error-message"></div>
+                    
+                    <button type="submit" class="btn-primary">Create Account</button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div id="dashboard-container" class="dashboard-page" style="display: none;">
+        <nav class="navbar">
+            <h1 class="nav-brand">Budget<span class="accent">Flow</span></h1>
+            <div class="nav-user">
+                <span id="user-name" class="user-name"></span>
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </nav>
+        
+        <main class="dashboard-main">
+            <!-- Balance Card -->
+            <div class="balance-section">
+                <div class="balance-card main-balance">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="current-balance">$0.00</div>
+                </div>
+                
+                <div class="balance-card income">
+                    <div class="balance-label">Total Income</div>
+                    <div class="balance-amount" id="total-income">$0.00</div>
+                </div>
+                
+                <div class="balance-card expense">
+                    <div class="balance-label">Total Expenses</div>
+                    <div class="balance-amount" id="total-expenses">$0.00</div>
+                </div>
+            </div>
+            
+            <!-- Add Transaction Form -->
+            <div class="transaction-form-section">
+                <h2 class="section-title">Add Transaction</h2>
+                
+                <form id="transaction-form" class="transaction-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transaction-type">Type</label>
+                            <select id="transaction-type" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transaction-category">Category</label>
+                            <select id="transaction-category" required>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="transaction-amount">Amount</label>
+                            <input type="number" id="transaction-amount" step="0.01" min="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transaction-description">Description (optional)</label>
+                        <input type="text" id="transaction-description" maxlength="500">
+                    </div>
+                    
+                    <div id="transaction-error" class="error-message"></div>
+                    
+                    <button type="submit" class="btn-primary">Add Transaction</button>
+                </form>
+            </div>
+            
+            <!-- Transactions List -->
+            <div class="transactions-section">
+                <h2 class="section-title">Recent Transactions</h2>
+                
+                <div id="transactions-list" class="transactions-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

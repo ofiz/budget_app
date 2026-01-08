@@ -1,0 +1,19 @@
+# E2E Tests Dockerfile using Playwright
+
+FROM mcr.microsoft.com/playwright:v1.40.0-jammy
+
+WORKDIR /tests
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY playwright.config.ts ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy test files
+COPY tests/ ./tests/
+
+# Run tests
+CMD ["npx", "playwright", "test"]
